@@ -992,24 +992,27 @@
 	<storageModule moduleId="org.eclipse.cdt.core.LanguageSettingsProviders"/>
 	<storageModule moduleId="org.eclipse.cdt.make.core.buildtargets"/>
 	<storageModule moduleId="refreshScope" versionNumber="2">
+		<configuration configurationName="STM32H743XI-UART-USB-CDC-FS"/>
 		<configuration configurationName="STM32F413RG-UART-USB-CDC-FS">
 			<resource resourceType="PROJECT" workspacePath="/stm32_bootloader"/>
 		</configuration>
 		<configuration configurationName="STM32H743XI-USB-CDC-FS">
 			<resource resourceType="PROJECT" workspacePath="/stm32_bootloader"/>
 		</configuration>
-		<configuration configurationName="STM32F401CC">
+		<configuration configurationName="STM32H743XI-UART-USB-BULK-FS">
 			<resource resourceType="PROJECT" workspacePath="/stm32_bootloader"/>
 		</configuration>
-		<configuration configurationName="STM32H743XI-UART-USB-BULK-FS">
+		<configuration configurationName="STM32F401CC">
 			<resource resourceType="PROJECT" workspacePath="/stm32_bootloader"/>
 		</configuration>
 		<configuration configurationName="STM32H743XI-USB-CDC-HS">
 			<resource resourceType="PROJECT" workspacePath="/stm32_bootloader"/>
 		</configuration>
+		<configuration configurationName="STM32H743XI-UART-USB-CDC-HS"/>
 		<configuration configurationName="STM32H743XI-UART-USB-BULK-HS">
 			<resource resourceType="PROJECT" workspacePath="/stm32_bootloader"/>
 		</configuration>
+		<configuration configurationName="STM32F401CC-UART-CDC-FS"/>
 		<configuration configurationName="STM32F746NG"/>
 		<configuration configurationName="STM32H743XI">
 			<resource resourceType="PROJECT" workspacePath="/stm32_bootloader"/>

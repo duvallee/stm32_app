@@ -9,6 +9,11 @@
 #include "usb_device.h"
 #endif
 
+#if defined(STM32F401CC)
+#include "led.h"
+#include "battery_gauge.h"
+#endif
+
 #if defined(STM32H743XI)
 // ==========================================================================
 static volatile int delay_count                          = 0;
@@ -152,9 +157,16 @@ int main(void)
    debug_output_info("Build Date : %s %s (%s) \r\n", __DATE__, __TIME__, __VERSION__);
    debug_output_info("=============================================== \r\n\r\n");
 
+#if defined(STM32F401CC)
+   led_init();
+   set_led_1_mode(LED_BLINK_MODE);
+   Battery_Gauge_Init();
+#endif
+
 #if defined(USE_USB)
    usb_device_init();
 #endif
+
 
    while (1)
    {
