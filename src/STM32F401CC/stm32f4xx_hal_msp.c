@@ -49,6 +49,7 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include "battery_gauge.h"
+#include "motor.h"
 
 // ***************************************************************************
 // Fuction      : HAL_MspInit()
@@ -147,6 +148,114 @@ void HAL_ADC_MspDeInit(ADC_HandleTypeDef* hadc)
       HAL_GPIO_DeInit(VBAT_SENSE_PORT, VBAT_SENSE_GPIO_B_1);
    }
 }
+
+// ***************************************************************************
+// Fuction      : HAL_TIM_Base_MspInit()
+// Description  : 
+// 
+//
+// ***************************************************************************
+void HAL_TIM_Base_MspInit(TIM_HandleTypeDef* htim_base)
+{
+   GPIO_InitTypeDef GPIO_InitStruct;
+   if (htim_base->Instance == TIM2)
+   {
+      // Peripheral clock enable
+      __TIM2_CLK_ENABLE();
+      __HAL_RCC_GPIOA_CLK_ENABLE();
+  
+      // TIM2 GPIO Configuration    
+      // PA0-WKUP       ------> TIM2_CH1
+      // PA1            ------> TIM2_CH2
+      // PA2            ------> TIM2_CH3
+      // PA3            ------> TIM2_CH4 
+      GPIO_InitStruct.Pin                                = GPIO_PIN_0 | GPIO_PIN_1 | GPIO_PIN_2 | GPIO_PIN_3;
+      GPIO_InitStruct.Mode                               = GPIO_MODE_AF_PP;
+      GPIO_InitStruct.Pull                               = GPIO_PULLDOWN;
+      GPIO_InitStruct.Speed                              = GPIO_SPEED_FAST;
+      GPIO_InitStruct.Alternate                          = GPIO_AF1_TIM2;
+      HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+
+      // Peripheral interrupt init
+      HAL_NVIC_SetPriority(TIM2_IRQn, 2, 0);
+      HAL_NVIC_EnableIRQ(TIM2_IRQn);
+   }
+   else if(htim_base->Instance == TIM4)
+   {
+      // Peripheral clock enable
+      __TIM4_CLK_ENABLE();
+      __HAL_RCC_GPIOB_CLK_ENABLE();
+
+      // TIM4 GPIO Configuration
+      // PB6     ------> TIM4_CH1
+      // PB7     ------> TIM4_CH2
+      // PB8     ------> TIM4_CH3
+      // PB9     ------> TIM4_CH4 
+
+      GPIO_InitStruct.Pin                                = MOTOR_1_GPIO_B_6 | MOTOR_2_GPIO_B_7 | MOTOR_3_GPIO_B_8 | MOTOR_4_GPIO_B_9;
+      GPIO_InitStruct.Mode                               = GPIO_MODE_AF_PP;
+      GPIO_InitStruct.Pull                               = GPIO_NOPULL;
+      GPIO_InitStruct.Speed                              = GPIO_SPEED_LOW;
+      GPIO_InitStruct.Alternate                          = GPIO_AF2_TIM4;
+      HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+   }
+  else if(htim_base->Instance == TIM9)
+  {
+      // Peripheral clock enable
+      __TIM9_CLK_ENABLE();
+
+      // Peripheral interrupt init
+      HAL_NVIC_SetPriority(TIM1_BRK_TIM9_IRQn, 3, 0);
+      HAL_NVIC_EnableIRQ(TIM1_BRK_TIM9_IRQn);
+   }
+
+}
+
+// ***************************************************************************
+// Fuction      : HAL_TIM_Base_MspDeInit()
+// Description  : 
+// 
+//
+// ***************************************************************************
+void HAL_TIM_Base_MspDeInit(TIM_HandleTypeDef* htim_base)
+{
+   if (htim_base->Instance == TIM2)
+   {
+      __TIM2_CLK_DISABLE();
+
+      // TIM2 GPIO Configuration    
+      // PA0-WKUP       ------> TIM2_CH1
+      // PA1            ------> TIM2_CH2
+      // PA2            ------> TIM2_CH3
+      // PA3            ------> TIM2_CH4 
+      HAL_GPIO_DeInit(GPIOA, GPIO_PIN_0 | GPIO_PIN_1 | GPIO_PIN_2 | GPIO_PIN_3);
+
+      // Peripheral interrupt DeInit
+      HAL_NVIC_DisableIRQ(TIM2_IRQn);
+   }
+   else if (htim_base->Instance == TIM4)
+   {
+      // Peripheral clock disable
+      __TIM4_CLK_DISABLE();
+
+      // TIM4 GPIO Configuration    
+      // PB6     ------> TIM4_CH1
+      // PB7     ------> TIM4_CH2
+      // PB8     ------> TIM4_CH3
+      // PB9     ------> TIM4_CH4 
+      HAL_GPIO_DeInit(GPIOB, GPIO_PIN_6 | GPIO_PIN_7 | GPIO_PIN_8 | GPIO_PIN_9);
+   }
+   else if (htim_base->Instance == TIM9)
+   {
+      // Peripheral clock disable
+      __TIM9_CLK_DISABLE();
+
+      // Peripheral interrupt DeInit
+      HAL_NVIC_DisableIRQ(TIM1_BRK_TIM9_IRQn);
+   }
+
+}
+
 
 // ***************************************************************************
 // Fuction      : HAL_UART_MspDeInit()

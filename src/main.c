@@ -12,6 +12,7 @@
 #if defined(STM32F401CC)
 #include "led.h"
 #include "battery_gauge.h"
+#include "motor.h"
 #endif
 
 #if defined(STM32H743XI)
@@ -161,6 +162,7 @@ int main(void)
    led_init();
    set_led_1_mode(LED_BLINK_MODE);
    Battery_Gauge_Init();
+   Motor_Init();
 #endif
 
 #if defined(USE_USB)
