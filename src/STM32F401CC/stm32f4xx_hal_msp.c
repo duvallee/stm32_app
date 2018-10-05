@@ -176,9 +176,11 @@ void HAL_TIM_Base_MspInit(TIM_HandleTypeDef* htim_base)
       GPIO_InitStruct.Alternate                          = GPIO_AF1_TIM2;
       HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
-      // Peripheral interrupt init
+#if defined(TIM2_REMOTE_CONTROL)
+      // TIM2 interrupt init
       HAL_NVIC_SetPriority(TIM2_IRQn, 2, 0);
       HAL_NVIC_EnableIRQ(TIM2_IRQn);
+#endif   // TIM2_REMOTE_CONTROL
    }
    else if(htim_base->Instance == TIM4)
    {
@@ -230,8 +232,10 @@ void HAL_TIM_Base_MspDeInit(TIM_HandleTypeDef* htim_base)
       // PA3            ------> TIM2_CH4 
       HAL_GPIO_DeInit(GPIOA, GPIO_PIN_0 | GPIO_PIN_1 | GPIO_PIN_2 | GPIO_PIN_3);
 
+#if defined(TIM2_REMOTE_CONTROL)
       // Peripheral interrupt DeInit
       HAL_NVIC_DisableIRQ(TIM2_IRQn);
+#endif
    }
    else if (htim_base->Instance == TIM4)
    {

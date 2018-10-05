@@ -80,7 +80,7 @@ endif
 ST_CUBEMX_LIBRARY_PATH:=./STM32Cube_FW_$(ST_CUBEMX_SERIES)_V$(ST_CUBEMX_MAJOR_VERSION).$(ST_CUBEMX_MINOR_VERSION).$(ST_CUBEMX_SUB_VERSION)
 
 # -----------------------------------------------------------------------------
-# Link script file
+# Link script file & add source file
 ifeq ("$(BUILD_TARGET_CHIP)","STM32F401CC")
 	LINK_SCRIPT:=./ldscript/$(BUILD_TARGET_CHIP)/STM32F401CCUx_FLASH.ld
 	STARTUP_CODE:=./startup/$(BUILD_TARGET_CHIP)/startup_stm32f401xc.s
@@ -96,6 +96,16 @@ ifeq ("$(BUILD_TARGET_CHIP)","STM32F401CC")
 	# TIM
 	MODEL_SOURCE+=./src/tim/$(BUILD_TARGET_CHIP)/motor.c
 	C_INCLUDE+=-I./src/tim/$(BUILD_TARGET_CHIP)/
+
+	ifeq ("$(TIM2_CONTROL)","motor")
+		MODEL_SOURCE+=./src/tim/$(BUILD_TARGET_CHIP)/motor_ext_esc.c
+		MODEL_EXTRA_OPTIONS+=-DTIM2_MOTOR
+	endif
+
+	ifeq ("$(TIM2_CONTROL)","remote_control")
+		MODEL_SOURCE+=./src/tim/$(BUILD_TARGET_CHIP)/remote_controller.c
+		MODEL_EXTRA_OPTIONS+=-DTIM2_REMOTE_CONTROL
+	endif
 endif
 
 ifeq ("$(BUILD_TARGET_CHIP)","STM32F413RG")
@@ -338,6 +348,7 @@ A_SRC:=$(STARTUP_CODE)
 OBJS:=$(C_SRC:%.c=$(OBJECT_DIR)/%.o) $(A_SRC:%.s=$(OBJECT_DIR)/%.o)
 OBJS:=$(OBJS:%.S=$(OBJECT_DIR)/%.o)  
 
+
 # --------------------------------------------------------------------
 ###############
 # Build project
@@ -371,7 +382,7 @@ clean:
 ##################
 # Implicit targets
 ##################
-$(OBJECT_DIR)/%.o: %.c
+$(OBJECT_DIR)/%.o: %.c %.h
 	@mkdir $(subst /,\,$(dir $@)) 2> NUL || echo off
 	$(CC) $(CFLAGS) $< -o $@
 

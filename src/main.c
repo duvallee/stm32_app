@@ -13,6 +13,15 @@
 #include "led.h"
 #include "battery_gauge.h"
 #include "motor.h"
+
+#if defined(TIM2_MOTOR)
+#include "motor_ext_esc.h"
+#endif
+
+#if defined(TIM2_REMOTE_CONTROL)
+#include "remote_controller.h"
+#endif
+
 #endif
 
 #if defined(STM32H743XI)
@@ -163,7 +172,15 @@ int main(void)
    set_led_1_mode(LED_BLINK_MODE);
    Battery_Gauge_Init();
    Motor_Init();
-#endif
+
+#if defined(TIM2_MOTOR)
+   Motor_Ext_Init();
+#endif   // TIM2_MOTOR
+
+#if defined(TIM2_REMOTE_CONTROL)
+   RemoteController_Init();
+#endif   // TIM2_REMOTE_CONTROL
+#endif   // STM32F401CC
 
 #if defined(USE_USB)
    usb_device_init();

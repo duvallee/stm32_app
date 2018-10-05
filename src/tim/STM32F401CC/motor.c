@@ -41,18 +41,27 @@ void Motor_Init(void)
 #endif
 
 #ifdef MOTOR_ESC
-   g_htim4_motor.Init.Prescaler                                  = 100;                                 /* ESC motor configuration - Freq 400Hz*/
-   g_htim4_motor.Init.CounterMode                                = TIM_COUNTERMODE_UP;
-   g_htim4_motor.Init.Period                                     = 2075;
+   g_htim4_motor.Init.Prescaler                          = 100;                                 /* ESC motor configuration - Freq 400Hz*/
+   g_htim4_motor.Init.CounterMode                        = TIM_COUNTERMODE_UP;
+   g_htim4_motor.Init.Period                             = 2075;
 #endif
                      
    g_htim4_motor.Init.ClockDivision                      = TIM_CLOCKDIVISION_DIV1;
-   HAL_TIM_Base_Init(&g_htim4_motor);
+   if (HAL_TIM_Base_Init(&g_htim4_motor) != HAL_OK)
+   {
+      _Error_Handler(__FILE__, __LINE__);
+   }
 
    sClockSourceConfig.ClockSource                        = TIM_CLOCKSOURCE_INTERNAL;
-   HAL_TIM_ConfigClockSource(&g_htim4_motor, &sClockSourceConfig);
+   if (HAL_TIM_ConfigClockSource(&g_htim4_motor, &sClockSourceConfig) != HAL_OK)
+   {
+      _Error_Handler(__FILE__, __LINE__);
+   }
 
-   HAL_TIM_PWM_Init(&g_htim4_motor);
+   if (HAL_TIM_PWM_Init(&g_htim4_motor) != HAL_OK)
+   {
+      _Error_Handler(__FILE__, __LINE__);
+   }
 
    sMasterConfig.MasterOutputTrigger                     = TIM_TRGO_RESET;
    sMasterConfig.MasterSlaveMode                         = TIM_MASTERSLAVEMODE_DISABLE;
