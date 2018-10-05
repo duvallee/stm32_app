@@ -22,6 +22,9 @@
 #include "remote_controller.h"
 #endif
 
+#include "blue_nrg_spi1.h"
+#include "sensor_spi2.h"
+
 #endif
 
 #if defined(STM32H743XI)
@@ -180,6 +183,9 @@ int main(void)
 #if defined(TIM2_REMOTE_CONTROL)
    RemoteController_Init();
 #endif   // TIM2_REMOTE_CONTROL
+
+   BLUE_NRG_SPI1_Init();
+   BLUE_NRG_SPI1_Init();
 #endif   // STM32F401CC
 
 #if defined(USE_USB)

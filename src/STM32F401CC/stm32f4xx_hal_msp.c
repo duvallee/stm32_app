@@ -325,4 +325,89 @@ void HAL_PCD_MspDeInit(PCD_HandleTypeDef* pcdHandle)
 }
 
 
+// ***************************************************************************
+// Fuction      : HAL_SPI_MspInit()
+// Description  : 
+// 
+//
+// ***************************************************************************
+void HAL_SPI_MspInit(SPI_HandleTypeDef* hspi)
+{
+   GPIO_InitTypeDef GPIO_InitStruct;
+   if (hspi->Instance == SPI1)
+   {
+      __GPIOA_CLK_ENABLE();
+      __SPI1_CLK_ENABLE();
+
+      // SCLK
+      GPIO_InitStruct.Pin                                = GPIO_PIN_5;
+      GPIO_InitStruct.Mode                               = GPIO_MODE_AF_PP;
+      GPIO_InitStruct.Pull                               = GPIO_PULLDOWN;
+      GPIO_InitStruct.Speed                              = GPIO_SPEED_HIGH;
+      GPIO_InitStruct.Alternate                          = GPIO_AF5_SPI1;
+      HAL_GPIO_Init(GPIOA, &GPIO_InitStruct); 
+
+      // MISO
+      GPIO_InitStruct.Pin                                = GPIO_PIN_6;
+      GPIO_InitStruct.Mode                               = GPIO_MODE_AF_PP;
+      GPIO_InitStruct.Pull                               = GPIO_NOPULL;
+      GPIO_InitStruct.Speed                              = GPIO_SPEED_HIGH;
+      GPIO_InitStruct.Alternate                          = GPIO_AF5_SPI1;
+      HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+
+      // MOSI
+      GPIO_InitStruct.Pin                                = GPIO_PIN_7;
+      GPIO_InitStruct.Mode                               = GPIO_MODE_AF_PP;
+      GPIO_InitStruct.Pull                               = GPIO_NOPULL;
+      GPIO_InitStruct.Speed                              = GPIO_SPEED_HIGH;
+      GPIO_InitStruct.Alternate                          = GPIO_AF5_SPI1;
+      HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+   }
+   else if (hspi->Instance == SPI2)
+   {
+      __GPIOB_CLK_ENABLE();
+      __SPI2_CLK_ENABLE();
+
+      // SCLK
+      GPIO_InitStruct.Pin                                = GPIO_PIN_13;
+      GPIO_InitStruct.Mode                               = GPIO_MODE_AF_PP;
+      GPIO_InitStruct.Pull                               = GPIO_NOPULL;
+      GPIO_InitStruct.Speed                              = GPIO_SPEED_HIGH;
+      GPIO_InitStruct.Alternate                          = GPIO_AF5_SPI2;
+      HAL_GPIO_Init(GPIOB, &GPIO_InitStruct); 
+
+      // MOSI
+      GPIO_InitStruct.Pin                                = GPIO_PIN_15;
+      GPIO_InitStruct.Mode                               = GPIO_MODE_AF_PP;
+      GPIO_InitStruct.Pull                               = GPIO_NOPULL;
+      GPIO_InitStruct.Speed                              = GPIO_SPEED_HIGH;
+      GPIO_InitStruct.Alternate                          = GPIO_AF5_SPI2;
+      HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+
+   }
+}
+
+
+// ***************************************************************************
+// Fuction      : HAL_SPI_MspDeInit()
+// Description  : 
+// 
+//
+// ***************************************************************************
+void HAL_SPI_MspDeInit(SPI_HandleTypeDef* hspi)
+{
+   if (hspi->Instance == SPI1)
+   {
+      __SPI1_CLK_DISABLE();
+      HAL_GPIO_DeInit(GPIOA, GPIO_PIN_5 | GPIO_PIN_6 | GPIO_PIN_7);
+      HAL_NVIC_DisableIRQ(SPI1_IRQn);
+   }
+   else if (hspi->Instance == SPI2)
+   {
+      HAL_GPIO_DeInit(GPIOB, GPIO_PIN_13 | GPIO_PIN_14 | GPIO_PIN_15);
+      HAL_NVIC_DisableIRQ(SPI2_IRQn);
+   }
+}
+
+
 

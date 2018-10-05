@@ -93,10 +93,11 @@ ifeq ("$(BUILD_TARGET_CHIP)","STM32F401CC")
 	# LED
 	MODEL_SOURCE+=./src/led/$(BUILD_TARGET_CHIP)/led.c
 	C_INCLUDE+=-I./src/led/$(BUILD_TARGET_CHIP)/
-	# TIM
+	# TIM4 for motor
 	MODEL_SOURCE+=./src/tim/$(BUILD_TARGET_CHIP)/motor.c
 	C_INCLUDE+=-I./src/tim/$(BUILD_TARGET_CHIP)/
 
+	#TIM2 for motor & remote controller
 	ifeq ("$(TIM2_CONTROL)","motor")
 		MODEL_SOURCE+=./src/tim/$(BUILD_TARGET_CHIP)/motor_ext_esc.c
 		MODEL_EXTRA_OPTIONS+=-DTIM2_MOTOR
@@ -106,6 +107,14 @@ ifeq ("$(BUILD_TARGET_CHIP)","STM32F401CC")
 		MODEL_SOURCE+=./src/tim/$(BUILD_TARGET_CHIP)/remote_controller.c
 		MODEL_EXTRA_OPTIONS+=-DTIM2_REMOTE_CONTROL
 	endif
+
+	# SPI
+	C_INCLUDE+=-I./src/spi/$(BUILD_TARGET_CHIP)/
+	# SPI1 for blue nrg
+	MODEL_SOURCE+=./src/spi/$(BUILD_TARGET_CHIP)/blue_nrg_spi1.c
+	# SPI2 for Sensor
+	MODEL_SOURCE+=./src/spi/$(BUILD_TARGET_CHIP)/sensor_spi2.c
+
 endif
 
 ifeq ("$(BUILD_TARGET_CHIP)","STM32F413RG")
@@ -294,6 +303,7 @@ HAL_LIBRARY_SOURCE+=$(ST_CUBEMX_LIBRARY_PATH)/Drivers/$(ST_CUBEMX_HAL_DRIVER)/sr
 ifeq ("$(BUILD_TARGET_CHIP)","STM32F401CC")
 	HAL_LIBRARY_SOURCE+=$(ST_CUBEMX_LIBRARY_PATH)/Drivers/$(ST_CUBEMX_HAL_DRIVER)/src/$(ST_HAL_LIBRARY_PREFIX)_hal_tim.c
 	HAL_LIBRARY_SOURCE+=$(ST_CUBEMX_LIBRARY_PATH)/Drivers/$(ST_CUBEMX_HAL_DRIVER)/src/$(ST_HAL_LIBRARY_PREFIX)_hal_tim_ex.c
+	HAL_LIBRARY_SOURCE+=$(ST_CUBEMX_LIBRARY_PATH)/Drivers/$(ST_CUBEMX_HAL_DRIVER)/src/$(ST_HAL_LIBRARY_PREFIX)_hal_spi.c
 endif
 
 ifeq ("$(DEBUG_DEVICE)","UART")
@@ -382,7 +392,7 @@ clean:
 ##################
 # Implicit targets
 ##################
-$(OBJECT_DIR)/%.o: %.c %.h
+$(OBJECT_DIR)/%.o: %.c
 	@mkdir $(subst /,\,$(dir $@)) 2> NUL || echo off
 	$(CC) $(CFLAGS) $< -o $@
 
