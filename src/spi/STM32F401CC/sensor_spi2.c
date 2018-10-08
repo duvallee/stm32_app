@@ -8,10 +8,9 @@
 #include "sensor_spi2.h"
 
 // ---------------------------------------------------------------------------
-
-// ---------------------------------------------------------------------------
 static SPI_HandleTypeDef g_spi2_sensor_Handle;
 
+// --------------------------------------------------------------------------------
 enum SPI2_CHIP_CS
 {
    SPI2_CHIP_UNSELECT                                    = 0,
@@ -45,7 +44,7 @@ static void Chip_Select_LIS2MDL(enum SPI2_CHIP_CS cs)
 }
 
 // ***************************************************************************
-// Fuction      : Chip_Select_LIS2MDL()
+// Fuction      : Chip_Select_LPS22HD()
 // Description  : 
 // 
 //
@@ -53,6 +52,177 @@ static void Chip_Select_LIS2MDL(enum SPI2_CHIP_CS cs)
 static void Chip_Select_LPS22HD(enum SPI2_CHIP_CS cs)
 {
    (cs == SPI2_CHIP_SELECT) ? HAL_GPIO_WritePin(GPIOC, GPIO_PIN_13, GPIO_PIN_RESET) : HAL_GPIO_WritePin(GPIOC, GPIO_PIN_13, GPIO_PIN_SET);
+}
+
+// ***************************************************************************
+// Fuction      : spi_read()
+// Description  : 
+// 
+//
+// ***************************************************************************
+static void spi_read(uint8_t *val)
+{
+   __disable_irq();
+   __HAL_SPI_ENABLE(&g_spi2_sensor_Handle);
+   __asm("dsb\n");
+   __asm("dsb\n");
+   __asm("dsb\n");
+   __asm("dsb\n");
+   __asm("dsb\n");
+   __asm("dsb\n");
+   __asm("dsb\n");
+   __asm("dsb\n");
+   __asm("dsb\n");
+   __asm("dsb\n");
+   __asm("dsb\n");
+   __asm("dsb\n");
+   __asm("dsb\n");
+   __asm("dsb\n");
+   __asm("dsb\n");
+   __asm("dsb\n");
+   __asm("dsb\n");
+   __asm("dsb\n");
+   __asm("dsb\n");
+   __asm("dsb\n");
+   __asm("dsb\n");
+   __asm("dsb\n");
+   __asm("dsb\n");
+   __asm("dsb\n");
+   __asm("dsb\n");
+   __asm("dsb\n");
+   __asm("dsb\n");
+   __asm("dsb\n");
+   __asm("dsb\n");
+   __asm("dsb\n");
+   __asm("dsb\n");
+   __asm("dsb\n");
+   __asm("dsb\n");
+   __asm("dsb\n");
+   __asm("dsb\n");
+   __asm("dsb\n");
+   __asm("dsb\n");
+   __asm("dsb\n");
+   __asm("dsb\n");
+   __asm("dsb\n");
+   __asm("dsb\n");
+   __asm("dsb\n");
+   __asm("dsb\n");
+   __asm("dsb\n");
+   __asm("dsb\n");
+   __asm("dsb\n");
+   __asm("dsb\n");
+   __asm("dsb\n");
+   __asm("dsb\n");
+   __asm("dsb\n");
+   __asm("dsb\n");
+   __asm("dsb\n");
+   __asm("dsb\n");
+   __asm("dsb\n");
+   __asm("dsb\n");
+   __asm("dsb\n");
+   __asm("dsb\n");
+   __asm("dsb\n");
+   __asm("dsb\n");
+   __asm("dsb\n");
+   __asm("dsb\n");
+   __asm("dsb\n");
+   __asm("dsb\n");
+   __asm("dsb\n");
+   __asm("dsb\n");
+   __asm("dsb\n");
+   __asm("dsb\n");
+   __HAL_SPI_DISABLE(&g_spi2_sensor_Handle);
+   __enable_irq();
+
+   while (((&g_spi2_sensor_Handle)->Instance->SR & SPI_FLAG_RXNE) != SPI_FLAG_RXNE)
+   {
+      ;
+   }
+
+   // read the received data
+   *val                                                  = *(__IO uint8_t *) &((&g_spi2_sensor_Handle)->Instance->DR);
+
+   while (((&g_spi2_sensor_Handle)->Instance->SR & SPI_FLAG_BSY) == SPI_FLAG_BSY)
+   {
+      ;
+   }
+}
+
+// ***************************************************************************
+// Fuction      : spi_read_nbytes()
+// Description  : 
+// 
+//
+// ***************************************************************************
+static void spi_read_nbytes(uint8_t *val, uint16_t nbytes)
+{
+   // Interrupts should be disabled during this operation
+   __disable_irq();
+   __HAL_SPI_ENABLE(&g_spi2_sensor_Handle);
+
+   // Transfer loop
+   while (nbytes > 1U)
+   {
+      // Check the RXNE flag
+      if ((&g_spi2_sensor_Handle)->Instance->SR & SPI_FLAG_RXNE)
+      {
+         // read the received data
+         *val                                         = *(__IO uint8_t *) &((&g_spi2_sensor_Handle)->Instance->DR);
+         val                                          += sizeof(uint8_t);
+         nbytes--;
+      }
+   }
+
+   /* In master RX mode the clock is automaticaly generated on the SPI enable.
+   So to guarantee the clock generation for only one data, the clock must be
+   disabled after the first bit and before the latest bit of the last Byte received */
+   /* __DSB instruction are inserted to garantee that clock is Disabled in the right timeframe */
+
+   __DSB();
+   __DSB();
+   __HAL_SPI_DISABLE(&g_spi2_sensor_Handle);
+
+   __enable_irq();
+  
+   while (((&g_spi2_sensor_Handle)->Instance->SR & SPI_FLAG_RXNE) != SPI_FLAG_RXNE)
+   {
+      ;
+   }
+
+   // read the received data
+   *val                                                  = *(__IO uint8_t *) &((&g_spi2_sensor_Handle)->Instance->DR);
+   while (((&g_spi2_sensor_Handle)->Instance->SR & SPI_FLAG_BSY) == SPI_FLAG_BSY)
+   {
+      ;
+   }
+}
+
+// ***************************************************************************
+// Fuction      : spi_write()
+// Description  : 
+// 
+//
+// ***************************************************************************
+static void spi_write(uint8_t val)
+{
+   // check TXE flag
+   while (((&g_spi2_sensor_Handle)->Instance->SR & SPI_FLAG_TXE) != SPI_FLAG_TXE)
+   {
+      ;
+   }
+
+   // Write the data
+   *((__IO uint8_t*) &((&g_spi2_sensor_Handle)->Instance->DR)) = val;
+
+   // Wait BSY flag
+   while (((&g_spi2_sensor_Handle)->Instance->SR & SPI_SR_TXE) != SPI_SR_TXE)
+   {
+      ;
+   }
+   while (((&g_spi2_sensor_Handle)->Instance->SR & SPI_FLAG_BSY) == SPI_FLAG_BSY)
+   {
+      ;
+   }
 }
 
 
@@ -65,6 +235,14 @@ static void Chip_Select_LPS22HD(enum SPI2_CHIP_CS cs)
 void Sensor_SPI2_Init(void)
 {
    GPIO_InitTypeDef GPIO_InitStruct;
+
+   UNUSED(spi_write);
+   UNUSED(spi_read_nbytes);
+   UNUSED(spi_read);
+   UNUSED(Chip_Select_LPS22HD);
+   UNUSED(Chip_Select_LIS2MDL);
+   UNUSED(Chip_Select_LSM6DSL);
+
    __GPIOA_CLK_ENABLE();
    __GPIOB_CLK_ENABLE();
    __GPIOC_CLK_ENABLE();
@@ -123,5 +301,120 @@ void Sensor_SPI2_Init(void)
 
 }
 
+
+// ***************************************************************************
+// Fuction      : Sensor_SPI2_Read()
+// Description  : 
+// 
+//
+// ***************************************************************************
+uint8_t Sensor_SPI2_Read(enum SPI2_SENSOR sensor, uint8_t addr, uint8_t* pBuffer, uint16_t nbytes)
+{
+   switch (sensor)
+   {
+      case SPI2_LSM6DSL :
+         Chip_Select_LSM6DSL(SPI2_CHIP_SELECT);
+         break;
+
+      case SPI2_LIS2MDL :
+         Chip_Select_LIS2MDL(SPI2_CHIP_SELECT);
+         break;
+
+      case SPI2_LPS22HD :
+         Chip_Select_LPS22HD(SPI2_CHIP_SELECT);
+         break;
+
+      default :
+         return -1;
+         break;
+   }
+
+   spi_write(addr | 0x80);
+   __HAL_SPI_DISABLE(&g_spi2_sensor_Handle);
+   SPI_1LINE_RX(&g_spi2_sensor_Handle);
+
+   if (nbytes > 1U)
+   {
+      spi_read_nbytes(pBuffer, nbytes);
+   }
+   else
+   {
+      spi_read(pBuffer);
+   }
+
+   switch (sensor)
+   {
+      case SPI2_LSM6DSL :
+         Chip_Select_LSM6DSL(SPI2_CHIP_UNSELECT);
+         break;
+
+      case SPI2_LIS2MDL :
+         Chip_Select_LIS2MDL(SPI2_CHIP_UNSELECT);
+         break;
+
+      case SPI2_LPS22HD :
+         Chip_Select_LPS22HD(SPI2_CHIP_UNSELECT);
+         break;
+   }
+
+   // Change the data line to output and enable the SPI
+   SPI_1LINE_TX(&g_spi2_sensor_Handle);
+   __HAL_SPI_ENABLE(&g_spi2_sensor_Handle);
+
+   return 0;
+}
+
+
+// ***************************************************************************
+// Fuction      : Sensor_SPI2_Write()
+// Description  : 
+// 
+//
+// ***************************************************************************
+uint8_t Sensor_SPI2_Write(enum SPI2_SENSOR sensor, uint8_t addr, uint8_t* pBuffer, uint16_t nbytes)
+{
+   int i;
+   switch (sensor)
+   {
+      case SPI2_LSM6DSL :
+         Chip_Select_LSM6DSL(SPI2_CHIP_SELECT);
+         break;
+
+      case SPI2_LIS2MDL :
+         Chip_Select_LIS2MDL(SPI2_CHIP_SELECT);
+         break;
+
+      case SPI2_LPS22HD :
+         Chip_Select_LPS22HD(SPI2_CHIP_SELECT);
+         break;
+
+      default :
+         return -1;
+         break;
+   }
+
+   spi_write(addr);
+
+   for (i = 0; i < nbytes; i++)
+   {
+      spi_write(pBuffer[i]);
+   }
+
+   switch (sensor)
+   {
+      case SPI2_LSM6DSL :
+         Chip_Select_LSM6DSL(SPI2_CHIP_UNSELECT);
+         break;
+
+      case SPI2_LIS2MDL :
+         Chip_Select_LIS2MDL(SPI2_CHIP_UNSELECT);
+         break;
+
+      case SPI2_LPS22HD :
+         Chip_Select_LPS22HD(SPI2_CHIP_UNSELECT);
+         break;
+   }
+   return 0;
+}
 
 
