@@ -194,6 +194,15 @@ environment/project/com.atollic.truestudio.exe.debug.toolchain.724080959.7542525
 environment/project/com.atollic.truestudio.exe.debug.toolchain.724080959.754252514/DEBUG_DEVICE/delimiter=;
 environment/project/com.atollic.truestudio.exe.debug.toolchain.724080959.754252514/DEBUG_DEVICE/operation=append
 environment/project/com.atollic.truestudio.exe.debug.toolchain.724080959.754252514/DEBUG_DEVICE/value=UART
+environment/project/com.atollic.truestudio.exe.debug.toolchain.724080959.754252514/LIS2MDL/delimiter=;
+environment/project/com.atollic.truestudio.exe.debug.toolchain.724080959.754252514/LIS2MDL/operation=append
+environment/project/com.atollic.truestudio.exe.debug.toolchain.724080959.754252514/LIS2MDL/value=yes
+environment/project/com.atollic.truestudio.exe.debug.toolchain.724080959.754252514/LPS22HD/delimiter=;
+environment/project/com.atollic.truestudio.exe.debug.toolchain.724080959.754252514/LPS22HD/operation=append
+environment/project/com.atollic.truestudio.exe.debug.toolchain.724080959.754252514/LPS22HD/value=yes
+environment/project/com.atollic.truestudio.exe.debug.toolchain.724080959.754252514/LSM6DSL/delimiter=;
+environment/project/com.atollic.truestudio.exe.debug.toolchain.724080959.754252514/LSM6DSL/operation=append
+environment/project/com.atollic.truestudio.exe.debug.toolchain.724080959.754252514/LSM6DSL/value=yes
 environment/project/com.atollic.truestudio.exe.debug.toolchain.724080959.754252514/TIM2_CONTROL/delimiter=;
 environment/project/com.atollic.truestudio.exe.debug.toolchain.724080959.754252514/TIM2_CONTROL/operation=replace
 environment/project/com.atollic.truestudio.exe.debug.toolchain.724080959.754252514/TIM2_CONTROL/value=motor

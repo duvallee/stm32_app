@@ -115,6 +115,24 @@ ifeq ("$(BUILD_TARGET_CHIP)","STM32F401CC")
 	# SPI2 for Sensor
 	MODEL_SOURCE+=./src/spi/$(BUILD_TARGET_CHIP)/sensor_spi2.c
 
+	ifeq ("$(LSM6DSL)","yes")
+		C_INCLUDE+=-I./src/spi/$(BUILD_TARGET_CHIP)/LSM6DSL/
+		MODEL_SOURCE+=./src/spi/$(BUILD_TARGET_CHIP)/LSM6DSL/lsm6dsl.c
+		MODEL_EXTRA_OPTIONS+=-DLSM6DSL
+	endif
+
+	ifeq ("$(LIS2MDL)","yes")
+		C_INCLUDE+=-I./src/spi/$(BUILD_TARGET_CHIP)/LIS2MDL/
+		MODEL_SOURCE+=./src/spi/$(BUILD_TARGET_CHIP)/LIS2MDL/lis2mdl.c
+		MODEL_EXTRA_OPTIONS+=-DLIS2MDL
+	endif
+
+	ifeq ("$(LPS22HD)","yes")
+		C_INCLUDE+=-I./src/spi/$(BUILD_TARGET_CHIP)/LPS22HD/
+		MODEL_SOURCE+=./src/spi/$(BUILD_TARGET_CHIP)/LPS22HD/lps22hd.c
+		MODEL_EXTRA_OPTIONS+=-DLPS22HD
+	endif
+
 endif
 
 ifeq ("$(BUILD_TARGET_CHIP)","STM32F413RG")

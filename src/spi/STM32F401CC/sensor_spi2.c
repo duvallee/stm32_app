@@ -7,8 +7,24 @@
 #include "main.h"
 #include "sensor_spi2.h"
 
+#if defined(LSM6DSL)
+#include "lsm6dsl.h"
+#endif
+
+#if defined(LIS2MDL)
+#include "lis2mdl.h"
+#endif
+
+#if defined(LPS22HD)
+#include "lps22hd.h"
+#endif
+
+
 // ---------------------------------------------------------------------------
 static SPI_HandleTypeDef g_spi2_sensor_Handle;
+
+// ---------------------------------------------------------------------------
+#define LSM6DSL_SPI_READ_ADDR                            0x80
 
 // --------------------------------------------------------------------------------
 enum SPI2_CHIP_CS
@@ -299,6 +315,19 @@ void Sensor_SPI2_Init(void)
    SPI_1LINE_TX(&g_spi2_sensor_Handle);
    __HAL_SPI_ENABLE(&g_spi2_sensor_Handle);
 
+#if defined(LSM6DSL)
+   Sensor_lsm6dsl_Init();
+#endif
+
+#if defined(LIS2MDL)
+   Sensor_lis2mdl_Init();
+#endif
+
+#if defined(LPS22HD)
+   Sensor_lps22hd_Init();
+#endif
+
+
 }
 
 
@@ -314,6 +343,7 @@ uint8_t Sensor_SPI2_Read(enum SPI2_SENSOR sensor, uint8_t addr, uint8_t* pBuffer
    {
       case SPI2_LSM6DSL :
          Chip_Select_LSM6DSL(SPI2_CHIP_SELECT);
+         addr                                            |= LSM6DSL_SPI_READ_ADDR;
          break;
 
       case SPI2_LIS2MDL :
@@ -329,7 +359,7 @@ uint8_t Sensor_SPI2_Read(enum SPI2_SENSOR sensor, uint8_t addr, uint8_t* pBuffer
          break;
    }
 
-   spi_write(addr | 0x80);
+   spi_write(addr);
    __HAL_SPI_DISABLE(&g_spi2_sensor_Handle);
    SPI_1LINE_RX(&g_spi2_sensor_Handle);
 
