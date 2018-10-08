@@ -37,11 +37,22 @@ _estack = 0x20010000;    /* end of RAM */
 _Min_Heap_Size = 0x200;      /* required amount of heap  */
 _Min_Stack_Size = 0x400; /* required amount of stack */
 
+__config_start    = ORIGIN(FLASH_CONFIG);
+__config_end      = ORIGIN(FLASH_CONFIG) + LENGTH(FLASH_CONFIG);
+
 /* Specify the memory areas */
 MEMORY
 {
-RAM (xrw)      : ORIGIN = 0x20000000, LENGTH = 64K
+RAM (xrw)                       : ORIGIN = 0x20000000, LENGTH = 64K
+
+FLASH_BOOT(rx)                  : ORIGIN = 0x8000000, LENGTH = 16K
+FLASH_CONFIG(r)                 : ORIGIN = 0x8004000, LENGTH = 16K
+FLASH_BOOT_RESERVED(rx)         : ORIGIN = 0x8008000, LENGTH = 16K
+FLASH(rx)                       : ORIGIN = 0x800C000, LENGTH = 208K
+
+/*
 FLASH (rx)      : ORIGIN = 0x8000000, LENGTH = 256K
+*/
 }
 
 /* Define output sections */
@@ -53,7 +64,7 @@ SECTIONS
     . = ALIGN(4);
     KEEP(*(.isr_vector)) /* Startup code */
     . = ALIGN(4);
-  } >FLASH
+  } >FLASH_BOOT
 
   /* The program code and other data goes into FLASH */
   .text :
