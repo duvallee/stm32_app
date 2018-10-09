@@ -21,6 +21,16 @@
 
 
 // ---------------------------------------------------------------------------
+#define LSM6DSL_SPI2_CS_PORT	                           GPIOA
+#define LSM6DSL_SPI2_CS_PIN     	                        GPIO_PIN_8
+
+#define LPS22HB_SPI_CS_PORT	                           GPIOC
+#define LPS22HB_SPI_CS_PIN     	                        GPIO_PIN_13
+
+#define LIS2MDL_SPI_CS_PORT	                           GPIOB
+#define LIS2MDL_SPI_CS_PIN     	                        GPIO_PIN_12
+
+// ---------------------------------------------------------------------------
 static SPI_HandleTypeDef g_spi2_sensor_Handle;
 
 // ---------------------------------------------------------------------------
@@ -45,7 +55,7 @@ enum SPI2_CHIP_CS
 // ***************************************************************************
 static void Chip_Select_LSM6DSL(enum SPI2_CHIP_CS cs)
 {
-   (cs == SPI2_CHIP_SELECT) ? HAL_GPIO_WritePin(GPIOA, GPIO_PIN_8, GPIO_PIN_RESET) : HAL_GPIO_WritePin(GPIOA, GPIO_PIN_8, GPIO_PIN_SET);
+   (cs == SPI2_CHIP_SELECT) ? HAL_GPIO_WritePin(LSM6DSL_SPI2_CS_PORT, LSM6DSL_SPI2_CS_PIN, GPIO_PIN_RESET) : HAL_GPIO_WritePin(LSM6DSL_SPI2_CS_PORT, LSM6DSL_SPI2_CS_PIN, GPIO_PIN_SET);
 }
 
 // ***************************************************************************
@@ -56,7 +66,7 @@ static void Chip_Select_LSM6DSL(enum SPI2_CHIP_CS cs)
 // ***************************************************************************
 static void Chip_Select_LIS2MDL(enum SPI2_CHIP_CS cs)
 {
-   (cs == SPI2_CHIP_SELECT) ? HAL_GPIO_WritePin(GPIOB, GPIO_PIN_2, GPIO_PIN_RESET) : HAL_GPIO_WritePin(GPIOB, GPIO_PIN_2, GPIO_PIN_SET);
+   (cs == SPI2_CHIP_SELECT) ? HAL_GPIO_WritePin(LIS2MDL_SPI_CS_PORT, LIS2MDL_SPI_CS_PIN, GPIO_PIN_RESET) : HAL_GPIO_WritePin(LIS2MDL_SPI_CS_PORT, LIS2MDL_SPI_CS_PIN, GPIO_PIN_SET);
 }
 
 // ***************************************************************************
@@ -67,7 +77,7 @@ static void Chip_Select_LIS2MDL(enum SPI2_CHIP_CS cs)
 // ***************************************************************************
 static void Chip_Select_LPS22HD(enum SPI2_CHIP_CS cs)
 {
-   (cs == SPI2_CHIP_SELECT) ? HAL_GPIO_WritePin(GPIOC, GPIO_PIN_13, GPIO_PIN_RESET) : HAL_GPIO_WritePin(GPIOC, GPIO_PIN_13, GPIO_PIN_SET);
+   (cs == SPI2_CHIP_SELECT) ? HAL_GPIO_WritePin(LPS22HB_SPI_CS_PORT, LPS22HB_SPI_CS_PIN, GPIO_PIN_RESET) : HAL_GPIO_WritePin(LPS22HB_SPI_CS_PORT, LPS22HB_SPI_CS_PIN, GPIO_PIN_SET);
 }
 
 // ***************************************************************************
@@ -263,36 +273,36 @@ void Sensor_SPI2_Init(void)
    __GPIOB_CLK_ENABLE();
    __GPIOC_CLK_ENABLE();
 
-   HAL_GPIO_WritePin(GPIOA, GPIO_PIN_8, GPIO_PIN_SET);
-   HAL_GPIO_WritePin(GPIOB, GPIO_PIN_2, GPIO_PIN_SET);
-   HAL_GPIO_WritePin(GPIOC, GPIO_PIN_13, GPIO_PIN_SET);
+   HAL_GPIO_WritePin(LSM6DSL_SPI2_CS_PORT, LSM6DSL_SPI2_CS_PIN, GPIO_PIN_SET);
+   HAL_GPIO_WritePin(LPS22HB_SPI_CS_PORT, LPS22HB_SPI_CS_PIN, GPIO_PIN_SET);
+   HAL_GPIO_WritePin(LIS2MDL_SPI_CS_PORT, LIS2MDL_SPI_CS_PIN, GPIO_PIN_SET);
 
    // CS : LSM6DSL
-   GPIO_InitStruct.Pin                                   = GPIO_PIN_8;
+   GPIO_InitStruct.Pin                                   = LSM6DSL_SPI2_CS_PIN;
    GPIO_InitStruct.Mode                                  = GPIO_MODE_OUTPUT_PP;
    GPIO_InitStruct.Pull                                  = GPIO_NOPULL;
    GPIO_InitStruct.Speed                                 = GPIO_SPEED_HIGH;
    GPIO_InitStruct.Alternate                             = 0;
-   HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
-   HAL_GPIO_WritePin(GPIOA, GPIO_PIN_8, GPIO_PIN_SET);
+   HAL_GPIO_Init(LSM6DSL_SPI2_CS_PORT, &GPIO_InitStruct);
+   HAL_GPIO_WritePin(LSM6DSL_SPI2_CS_PORT, LSM6DSL_SPI2_CS_PIN, GPIO_PIN_SET);
 
    // CS : LIS2MDL
-   GPIO_InitStruct.Pin                                   = GPIO_PIN_2;
+   GPIO_InitStruct.Pin                                   = LPS22HB_SPI_CS_PIN;
    GPIO_InitStruct.Mode                                  = GPIO_MODE_OUTPUT_PP;
    GPIO_InitStruct.Pull                                  = GPIO_NOPULL;
    GPIO_InitStruct.Speed                                 = GPIO_SPEED_HIGH;
    GPIO_InitStruct.Alternate                             = 0;
-   HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
-   HAL_GPIO_WritePin(GPIOB, GPIO_PIN_2, GPIO_PIN_SET);
+   HAL_GPIO_Init(LPS22HB_SPI_CS_PORT, &GPIO_InitStruct);
+   HAL_GPIO_WritePin(LPS22HB_SPI_CS_PORT, LPS22HB_SPI_CS_PIN, GPIO_PIN_SET);
 
    // CS : LPS22HD
-   GPIO_InitStruct.Pin                                   = GPIO_PIN_13;
+   GPIO_InitStruct.Pin                                   = LIS2MDL_SPI_CS_PIN;
    GPIO_InitStruct.Mode                                  = GPIO_MODE_OUTPUT_PP;
    GPIO_InitStruct.Pull                                  = GPIO_NOPULL;
    GPIO_InitStruct.Speed                                 = GPIO_SPEED_HIGH;
    GPIO_InitStruct.Alternate                             = 0;
-   HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
-   HAL_GPIO_WritePin(GPIOC, GPIO_PIN_13, GPIO_PIN_SET);
+   HAL_GPIO_Init(LIS2MDL_SPI_CS_PORT, &GPIO_InitStruct);
+   HAL_GPIO_WritePin(LIS2MDL_SPI_CS_PORT, LIS2MDL_SPI_CS_PIN, GPIO_PIN_SET);
 
    g_spi2_sensor_Handle.Instance                         = SPI2;
    g_spi2_sensor_Handle.Init.Mode                        = SPI_MODE_MASTER;

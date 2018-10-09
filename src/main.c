@@ -185,7 +185,7 @@ int main(void)
 #endif   // TIM2_REMOTE_CONTROL
 
    BLUE_NRG_SPI1_Init();
-   BLUE_NRG_SPI1_Init();
+   Sensor_SPI2_Init();
 #endif   // STM32F401CC
 
 #if defined(USE_USB)
